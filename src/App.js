@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
 import Transactions from './components/Transactions';
 import Operations from './components/Operations';
-import Balance from './components/Balance';
 import axios from 'axios';
 
 
@@ -18,7 +17,7 @@ class App extends Component {
 
   async componentDidMount() {
     await this.getData()
-    // await this.getBalance()
+
   }
 
 
@@ -37,25 +36,17 @@ class App extends Component {
     this.getData()
   }
 
-  depositFunction = (trans) => {
+  addNewTransaction = (trans) => {
     let newTransactions = [...this.state.transactions]
     newTransactions.push(trans)
     this.setState({ transactions: newTransactions }, () => { this.postData(trans.amount, trans.vendor, trans.category, trans.type) })
 
-
   }
 
-  withdrawFunction = (trans) => {
-    let newTransactions = [...this.state.transactions]
-    newTransactions.push(trans)
-    this.setState({ transactions: newTransactions })
-    this.postData(trans.amount, trans.vendor, trans.category, trans.type)
-
-  }
 
   getBalance = () => {
     let balance = 0
-    this.state.transactions.forEach(t => balance += t.amount)
+    this.state.transactions.forEach(t => balance += JSON.parse(t.amount))
     return balance
   }
 
@@ -63,9 +54,9 @@ class App extends Component {
     return (
       <div className="App">
         <div className="App-header">
-          <div>${this.getBalance()} </div>
-          <Transactions transactions={this.state.transactions} />
-          <Operations transactions={this.state.transactions} postdata={this.postData} depositFunction={this.depositFunction} withdrawFunction={this.withdrawFunction} />
+          <div id="totalBalance">${this.getBalance()} <hr></hr></div>
+          <div><Transactions transactions={this.state.transactions} /><hr></hr></div>
+          <Operations transactions={this.state.transactions} postdata={this.postData} addNewTransaction={this.addNewTransaction} />
         </div>
       </div>
     );
